@@ -1,2 +1,25 @@
 resources:
-  - name: anyines_blog_dockerfile
+- name: anynines-blog-dockerfile
+  type: git
+  source:
+    uri: git@github.com:david3214/follow-anynines.git
+    branch: master
+    private_key: ((git-private-key))
+    paths: [Dockerfile]
+
+- name: anynines-build-image
+  type: docker-image
+  source:
+    repository: david3214/follow-anynines
+    email: ((DOCKER_MAIL))
+    username: ((DOCKER_USER))
+    password: ((DOCKER_PASS))
+
+jobs:
+- name: anynines-build-job
+  plan:
+  - get: anynines-blog-dockerfile
+    trigger: true
+  - put: anynines-build-image
+    params:
+      build: anynines-blog-dockerfile
